@@ -18,6 +18,13 @@ public class DatabaseModule {
 
 	@Provides
 	public Realm provideRealm() {
-		return Realm.getInstance(ctx);
+		Realm r = Realm.getInstance(ctx);
+		r.setAutoRefresh(true);
+		return r;
+	}
+
+	@Provides
+	public Context getContext() {
+		return ctx;
 	}
 }

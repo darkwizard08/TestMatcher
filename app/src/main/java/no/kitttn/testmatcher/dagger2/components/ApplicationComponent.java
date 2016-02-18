@@ -5,8 +5,8 @@ import org.greenrobot.eventbus.EventBus;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import no.kitttn.testmatcher.UserGenerator;
 import no.kitttn.testmatcher.dagger2.modules.DatabaseModule;
-import no.kitttn.testmatcher.NotificationManager;
 import no.kitttn.testmatcher.dagger2.modules.EventBusModule;
 
 /**
@@ -17,6 +17,6 @@ import no.kitttn.testmatcher.dagger2.modules.EventBusModule;
 		DatabaseModule.class, EventBusModule.class
 })
 public interface ApplicationComponent {
-	NotificationManager getManager();
+	UserGenerator getUserGenerator();
 	EventBus getEventBus();
 }
