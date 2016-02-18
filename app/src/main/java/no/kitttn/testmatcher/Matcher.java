@@ -42,8 +42,4 @@ public class Matcher {
 	public boolean checkCompatibility(Person p) {
 		return p.getStatus().equals("like")/* && likedPersons.contains(p)*/;
 	}
-
-	@Inject
-	public Matcher() {
-	}
 }

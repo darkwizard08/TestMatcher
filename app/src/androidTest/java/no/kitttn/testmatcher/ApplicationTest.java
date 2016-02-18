@@ -6,14 +6,13 @@ import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 import org.testpackage.test_sdk.android.testlib.API;
-import org.testpackage.test_sdk.android.testlib.interfaces.PersonsExtendedCallback;
 
 import io.realm.Realm;
 import no.kitttn.testmatcher.dagger2.components.ApplicationComponent;
 import no.kitttn.testmatcher.dagger2.components.DaggerApplicationComponent;
-import no.kitttn.testmatcher.dagger2.modules.DatabaseModule;
+import no.kitttn.testmatcher.dagger2.modules.PersonBaseModule;
 import no.kitttn.testmatcher.model.Person;
-import no.kitttn.testmatcher.model.events.PersonUpdatedEvent;
+import no.kitttn.testmatcher.presenters.GeneratorPresenter;
 
 /**
  * @author kitttn
@@ -96,6 +95,11 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 		assertTrue(gen.getUserList().size() > 0);
 	}
 
+	public void testGeneratorPresenterInjection() {
+		GeneratorPresenter pres = buildComponent().getGenPresenter();
+		assertNotNull(pres);
+	}
+
 	public void testMatcherInjection() {
 		Matcher m = buildComponent().getMatcher();
 		assertNotNull(m.generator);
@@ -138,7 +142,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 	private ApplicationComponent buildComponent() {
 		return DaggerApplicationComponent.builder()
-				.databaseModule(new DatabaseModule(getContext()))
+				.personBaseModule(new PersonBaseModule(getContext()))
 				.build();
 	}
 

@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import io.realm.Realm;
 import no.kitttn.testmatcher.model.Person;
+import no.kitttn.testmatcher.model.events.PersonListUpdatedEvent;
 
 /**
  * @author kitttn
@@ -49,24 +50,34 @@ public class UserGenerator {
 
 	protected UserUpdater updater = new UserUpdater();
 	protected EventBus bus;
-	@Inject protected Realm realm;
-	@Inject protected Context context;
+	protected Realm realm;
+	protected Context context;
 
 	@Inject
-	public UserGenerator(EventBus bus) {
+	public UserGenerator(EventBus bus, Realm realm, Context context) {
 		this.bus = bus;
 		bus.register(this);
+		this.realm = realm;
+		this.context = context;
 	}
 
 	public void generate() {
-		updater.unsubscribe();
+		realm.beginTransaction();
+		for (int i = 0; i < 100; ++i) {
+			Person p = new Person();
+			p.setId(i + 1);
+			userList.add(p);
+		}
+		realm.commitTransaction();
+		processingFinished();
+		/*updater.unsubscribe();
 		API.INSTANCE.init(context);
-		API.INSTANCE.refreshPersons(this::updateList);
+		API.INSTANCE.refreshPersons(this::updateList);*/
 	}
 
 	// ====== loading ======
 
-	public void updateList() {
+	private void updateList() {
 		loadPage(0);
 	}
 
@@ -93,7 +104,8 @@ public class UserGenerator {
 		Log.i(TAG, "processPersonsList: Finished processing, total pages: " + pagesLoaded);
 		for (Person p : this.realm.where(Person.class).findAll())
 			this.userList.add(p);
-		// throw Event
+
+		bus.post(new PersonListUpdatedEvent());
 		//updater.subscribe();
 	}
 
@@ -103,7 +115,7 @@ public class UserGenerator {
 			processingFinished();
 			return;
 		}
-		//loadPage(pageLoaded + 1);
+		loadPage(pageLoaded + 1);
 	}
 
 	// ======== updating ========

@@ -17,7 +17,4 @@ public class EventBusModule {
 	public EventBus provideEventBus() {
 		return new EventBus();
 	}
-
-	@Inject
-	public EventBusModule() {}
 }
