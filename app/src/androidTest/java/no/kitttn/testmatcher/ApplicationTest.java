@@ -28,8 +28,8 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 	// If unsubscribed and trying again -> omitting == DONE
 	// DB injection == DONE
 	// handle updates on service == DONE
+	// Broadcasting events == DONE
 
-	// Broadcasting events == DONE, but check in real app
 	public ApplicationTest() {
 		super(Application.class);
 	}
@@ -42,7 +42,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 		assertNotNull(gen.updater);
 	}
 
-	public void testInitAPIAndUserUpdate () {
+	public void _testInitAPIAndUserUpdate () {
 		initAPI(this::userUpdate);
 	}
 
@@ -94,6 +94,44 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 		assertNotNull(gen.getUserList());
 		assertTrue(gen.getUserList().size() > 0);
+	}
+
+	public void testMatcherInjection() {
+		Matcher m = buildComponent().getMatcher();
+		assertNotNull(m.generator);
+	}
+
+	public void testMatcherYieldsPerson() {
+		Matcher m = buildComponent().getMatcher();
+		Person p = m.getNextPerson();
+
+		assertNotNull(p);
+		assertNotSame(p.getStatus(), "removed");
+	}
+
+	public void testMatcherLikedPerson() {
+		Matcher m = buildComponent().getMatcher();
+		Person p = new Person();
+		m.markLiked(p);
+
+		assertEquals(m.likedPersons.size(), 1);
+	}
+
+	public void testMatcherDislikedPerson() {
+		Matcher m = buildComponent().getMatcher();
+		Person p = new Person();
+		m.markDisliked(p);
+
+		assertEquals(m.rejectedPersons.size(), 1);
+	}
+
+	public void testMatcherLikePersonStatusTriggersMatch() {
+		Matcher m = buildComponent().getMatcher();
+		Person p = new Person();
+		p.setStatus("like");
+		m.markLiked(p);
+
+		assertEquals(m.checkCompatibility(p), true);
 	}
 
 	// ============= Private methods ================

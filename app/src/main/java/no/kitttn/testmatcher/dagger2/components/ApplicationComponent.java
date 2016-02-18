@@ -5,6 +5,7 @@ import org.greenrobot.eventbus.EventBus;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import no.kitttn.testmatcher.Matcher;
 import no.kitttn.testmatcher.UserGenerator;
 import no.kitttn.testmatcher.dagger2.modules.DatabaseModule;
 import no.kitttn.testmatcher.dagger2.modules.EventBusModule;
@@ -18,5 +19,6 @@ import no.kitttn.testmatcher.dagger2.modules.EventBusModule;
 })
 public interface ApplicationComponent {
 	UserGenerator getUserGenerator();
+	Matcher getMatcher();
 	EventBus getEventBus();
 }

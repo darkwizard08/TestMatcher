@@ -9,12 +9,12 @@ import org.testpackage.test_sdk.android.testlib.API;
 import org.testpackage.test_sdk.android.testlib.interfaces.PersonsExtendedCallback;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.inject.Inject;
 
 import io.realm.Realm;
 import no.kitttn.testmatcher.model.Person;
-import no.kitttn.testmatcher.model.events.PersonUpdatedEvent;
 
 /**
  * @author kitttn
@@ -45,6 +45,7 @@ public class UserGenerator {
 	private static final String TAG = "UserGenerator";
 	private ArrayList<Person> userList = new ArrayList<>();
 	private int pagesLoaded = 0;
+	private Random random = new Random();
 
 	protected UserUpdater updater = new UserUpdater();
 	protected EventBus bus;
@@ -60,16 +61,16 @@ public class UserGenerator {
 	public void generate() {
 		updater.unsubscribe();
 		API.INSTANCE.init(context);
-		API.INSTANCE.refreshPersons(this::loadPersons);
+		API.INSTANCE.refreshPersons(this::updateList);
 	}
 
 	// ====== loading ======
 
-	public void loadPersons() {
+	public void updateList() {
 		loadPage(0);
 	}
 
-	public void loadPage(int pageNumber) {
+	private void loadPage(int pageNumber) {
 		Log.i(TAG, "loadPage: Loading page " + pageNumber + "...");
 		API.INSTANCE.getPersons(pageNumber, new PersonsExtendedCallback() {
 			@Override
@@ -84,11 +85,11 @@ public class UserGenerator {
 		});
 	}
 
-	public boolean areAllPersonsProcessed(String personsList) {
+	private boolean areAllPersonsProcessed(String personsList) {
 		return personsList.length() == 2;
 	}
 
-	public void processingFinished() {
+	private void processingFinished() {
 		Log.i(TAG, "processPersonsList: Finished processing, total pages: " + pagesLoaded);
 		for (Person p : this.realm.where(Person.class).findAll())
 			this.userList.add(p);
@@ -96,19 +97,20 @@ public class UserGenerator {
 		//updater.subscribe();
 	}
 
-	public void processPersonsList(int pageLoaded, String personsList) {
+	private void processPersonsList(int pageLoaded, String personsList) {
 		if (areAllPersonsProcessed(personsList)) {
 			this.pagesLoaded = pageLoaded;
 			processingFinished();
 			return;
 		}
-		loadPage(pageLoaded + 1);
+		//loadPage(pageLoaded + 1);
 	}
 
 	// ======== updating ========
 
 	@Subscribe
 	public void updatePerson(String person) {
+		// creating new instance because Realm can't provide same instance on different threads
 		Realm r = Realm.getInstance(context);
 		r.beginTransaction();
 		Person p = r.createOrUpdateObjectFromJson(Person.class, person);
@@ -127,7 +129,24 @@ public class UserGenerator {
 		updater.unsubscribe();
 	}
 
+	// ========= users list =========
+
 	public ArrayList<Person> getUserList() {
 		return userList;
+	}
+
+	public int getPersonsLeft() {
+		return userList.size();
+	}
+
+	public Person getNextPerson() {
+		Log.i(TAG, "getNextPerson: Persons left:" + getPersonsLeft());
+		if (getPersonsLeft() == 0) {
+			Log.i(TAG, "getNextPerson: No persons left, starting from the beginning...");
+			//updateList();
+			return new Person();
+		}
+		int index = random.nextInt(getPersonsLeft());
+		return userList.remove(index);
 	}
 }
