@@ -6,6 +6,7 @@ import org.greenrobot.eventbus.Subscribe;
 import javax.inject.Inject;
 
 import no.kitttn.testmatcher.UserGenerator;
+import no.kitttn.testmatcher.model.events.GotPersonEvent;
 import no.kitttn.testmatcher.model.events.PersonListUpdatedEvent;
 import no.kitttn.testmatcher.views.GeneratorView;
 
@@ -22,17 +23,12 @@ public class GeneratorPresenter {
 
 	public void generateList() {
 		view.loading();
-		// TODO: replace with RxJava subscribe()
 		generator.generate();
 	}
 
 	@Subscribe
 	public void onPersonListUpdated(PersonListUpdatedEvent evt) {
 		view.listLoaded();
-	}
-
-	public int getPersonsLeft() {
-		return generator.getPersonsLeft();
 	}
 
 	@Inject

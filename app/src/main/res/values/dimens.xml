@@ -2,4 +2,5 @@
 <resources>
     <dimen name="matcher_photo_size">180dp</dimen>
     <dimen name="matcher_photo_margin">20dp</dimen>
+    <dimen name="activity_matcher_map_margin">20dp</dimen>
 </resources>

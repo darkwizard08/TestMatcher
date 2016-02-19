@@ -5,10 +5,10 @@ import no.kitttn.testmatcher.model.Person;
 /**
  * @author kitttn
  */
-public class PersonUpdatedEvent {
+public class GotPersonEvent {
 	private Person person;
 
-	public PersonUpdatedEvent(Person person) {
+	public GotPersonEvent(Person person) {
 		this.person = person;
 	}
 

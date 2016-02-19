@@ -9,6 +9,8 @@ import com.google.gson.GsonBuilder;
 
 import org.greenrobot.eventbus.EventBus;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import io.realm.Realm;
@@ -34,22 +36,22 @@ public class PersonBaseModule {
 		return r;
 	}
 
-	@Provides
+	@Provides @Singleton
 	public Context provideContext() {
 		return ctx;
 	}
 
-	@Provides
-	public UserGenerator provideUserGenerator(EventBus bus, Realm realm, Context ctx) {
-		return new UserGenerator(bus, realm, ctx);
+	@Provides @Singleton
+	public UserGenerator provideUserGenerator(EventBus bus, Realm realm, Context ctx, RxAPI api) {
+		return new UserGenerator(bus, realm, ctx, api);
 	}
 
-	@Provides
+	@Provides @Singleton
 	public RxAPI provideAPI(Context ctx, Gson gson) {
 		return new RxAPI(ctx, gson);
 	}
 
-	@Provides
+	@Provides @Singleton
 	public Matcher provideMatcher(UserGenerator generator) {
 		return new Matcher(generator);
 	}

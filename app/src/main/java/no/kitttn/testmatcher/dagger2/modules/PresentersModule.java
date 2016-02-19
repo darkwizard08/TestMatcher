@@ -20,7 +20,7 @@ public class PresentersModule {
 	}
 
 	@Provides
-	public MatcherPresenter provideMatcherPresenter(Matcher matcher) {
-		return new MatcherPresenter(matcher);
+	public MatcherPresenter provideMatcherPresenter(Matcher matcher, EventBus bus) {
+		return new MatcherPresenter(matcher, bus);
 	}
 }

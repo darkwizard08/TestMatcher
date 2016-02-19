@@ -24,13 +24,13 @@ public class Matcher {
 	public ArrayList<Person> likedPersons = new ArrayList<>();
 	public ArrayList<Person> rejectedPersons = new ArrayList<>();
 
-	public Person getNextPerson() {
+	public void getNextPerson() {
 		if (generator.getPersonsLeft() == 0) {
 			likedPersons = new ArrayList<>();
 			rejectedPersons = new ArrayList<>();
 			Log.i(TAG, "getNextPerson: List is empty :(");
 		}
-		return generator.getNextPerson();
+		generator.getNextPerson();
 	}
 
 	public void markLiked(Person likedPerson) {
@@ -46,11 +46,7 @@ public class Matcher {
 	}
 
 	public boolean checkCompatibility(Person p) {
-		return p.getStatus().equals("like")/* && likedPersons.contains(p)*/;
-	}
-
-	public void subscribe() {
-		generator.subscribe();
+		return p.getStatus().equals("like") && likedPersons.contains(p);
 	}
 
 	public void unsubscribe() {

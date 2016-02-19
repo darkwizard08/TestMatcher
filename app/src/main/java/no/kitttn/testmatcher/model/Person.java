@@ -12,6 +12,7 @@ public class Person extends RealmObject {
 	private String location = "Berlin";
 	private String photo = "http://www.bestmotherofthegroomspeeches.com/wp-content/themes/thesis/rotator/sample-1.jpg";
 	private String status = "none";
+	private int viewed = 0;
 
 	public int getId() {
 		return id;
@@ -43,5 +44,13 @@ public class Person extends RealmObject {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public int getViewed() {
+		return viewed;
+	}
+
+	public void setViewed(int viewed) {
+		this.viewed = viewed;
 	}
 }

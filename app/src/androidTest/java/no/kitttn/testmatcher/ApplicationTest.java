@@ -38,7 +38,6 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 		assertNotNull(gen.bus);
 		assertNotNull(gen.realm);
 		assertNotNull(gen.context);
-		assertNotNull(gen.updater);
 	}
 
 	public void _testUserUpdate () {
@@ -66,7 +65,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 		String person = "{\"id\":1,\"location\":\"38.735227,-9.109606\",\"photo\":\"http://cs313217.vk.me/v313217800/436c/DO1w-2mKStQ.jpg\",\"status\":\"none\"}";
 		Person p = buildComponent().getGson().fromJson(person, Person.class);
-		gen.updatePerson(p);
+		gen.onPersonUpdated(p);
 
 		p = realm.where(Person.class).findFirst();
 
@@ -76,7 +75,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 	public void testPersonErasure() {
 		UserGenerator gen = buildComponent().getUserGenerator();
-		gen.updatePerson(new Person());
+		gen.onPersonUpdated(new Person());
 
 		long totalRecords = gen.realm.where(Person.class).equalTo("id", 1).count();
 		Log.w(TAG, "testPersonErasure: totalRecors:" + totalRecords);
@@ -115,10 +114,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 	public void testMatcherYieldsPerson() {
 		Matcher m = buildComponent().getMatcher();
-		Person p = m.getNextPerson();
-
-		assertNotNull(p);
-		assertNotSame(p.getStatus(), "removed");
+		m.getNextPerson();
 	}
 
 	public void testMatcherLikedPerson() {
@@ -158,28 +154,6 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 		realm.beginTransaction();
 		realm.clear(Person.class);
 		realm.commitTransaction();
-	}
-
-	private void initAPI(Executor executeAfterAPIInitialized) {
-		API.INSTANCE.init(getContext());
-		API.INSTANCE.refreshPersons(() -> {
-			Log.w(TAG, "initAPI: Initialized!");
-			executeAfterAPIInitialized.execute();
-		});
-	}
-
-	private void userUpdate() {
-		UserGenerator gen = buildComponent().getUserGenerator();
-		erasePersonsDatabase(gen.realm);
-
-		gen.subscribe();
-		sleep(5000);
-		gen.unsubscribe();
-
-		gen.realm.refresh();
-		long personsUpdated = gen.realm.where(Person.class).count();
-		Log.w(TAG, "testNotificationManagerUserUpdate: Persons updated:" + personsUpdated);
-		assertTrue(personsUpdated > 0);
 	}
 
 	private void sleep(int millis) {

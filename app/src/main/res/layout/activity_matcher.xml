@@ -44,4 +44,11 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/actMatcherMapContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/activity_matcher_map_margin"/>
+
 </LinearLayout>

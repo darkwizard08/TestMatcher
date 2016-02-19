@@ -7,13 +7,15 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.gms.maps.GoogleMapOptions;
+
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import no.kitttn.testmatcher.App;
-import no.kitttn.testmatcher.Matcher;
 import no.kitttn.testmatcher.R;
+import no.kitttn.testmatcher.fragments.LocationFragment;
 import no.kitttn.testmatcher.model.Person;
 import no.kitttn.testmatcher.presenters.MatcherPresenter;
 import no.kitttn.testmatcher.utils.Util;
@@ -41,12 +43,23 @@ public class MatcherActivity extends Activity implements MatcherView {
 		setContentView(R.layout.activity_matcher);
 		ButterKnife.bind(this);
 
+		getFragmentManager()
+				.beginTransaction()
+				.add(R.id.actMatcherMapContainer, LocationFragment.newInstance(getMapOptions()))
+				.commit();
+
 		likeBtn.setOnClickListener(view -> like());
 		dislikeBtn.setOnClickListener(view -> dislike());
 
 		((App) getApplication()).getComponent().inject(this);
 		presenter.setView(this);
 		presenter.getNextPerson();
+	}
+
+	private GoogleMapOptions getMapOptions() {
+		return new GoogleMapOptions()
+				.liteMode(true)
+				.mapToolbarEnabled(false);
 	}
 
 	@Override

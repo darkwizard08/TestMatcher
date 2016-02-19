@@ -77,7 +77,6 @@ public class RxAPI {
 				})
 				//.doOnSubscribe(() -> API.INSTANCE.refreshPersons(() -> {}))
 				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
 				.doOnNext(it -> API.INSTANCE.getPersons(it, new PersonsExtendedCallback() {
 					@Override
 					public void onResult(String persons) {
