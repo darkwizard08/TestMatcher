@@ -5,6 +5,7 @@
               android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/actMatcherPhotoImg"
         android:layout_width="@dimen/matcher_photo_size"
         android:layout_height="@dimen/matcher_photo_size"
         android:src="@drawable/placeholder"
@@ -23,12 +24,14 @@
             android:layout_weight=".2"/>
 
         <Button
+            android:id="@+id/actMatcherLikeBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".3"
             android:text="@string/like"/>
 
         <Button
+            android:id="@+id/actMatcherDislikeBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".3"

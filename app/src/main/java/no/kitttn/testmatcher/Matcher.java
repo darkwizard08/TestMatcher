@@ -13,7 +13,12 @@ import no.kitttn.testmatcher.model.Person;
  */
 public class Matcher {
 	private static final String TAG = "Matcher";
-	@Inject protected UserGenerator generator;
+	protected UserGenerator generator;
+
+	@Inject
+	public Matcher(UserGenerator generator) {
+		this.generator = generator;
+	}
 
 	// TODO: make private
 	public ArrayList<Person> likedPersons = new ArrayList<>();
@@ -23,6 +28,7 @@ public class Matcher {
 		if (generator.getPersonsLeft() == 0) {
 			likedPersons = new ArrayList<>();
 			rejectedPersons = new ArrayList<>();
+			Log.i(TAG, "getNextPerson: List is empty :(");
 		}
 		return generator.getNextPerson();
 	}
@@ -41,5 +47,13 @@ public class Matcher {
 
 	public boolean checkCompatibility(Person p) {
 		return p.getStatus().equals("like")/* && likedPersons.contains(p)*/;
+	}
+
+	public void subscribe() {
+		generator.subscribe();
+	}
+
+	public void unsubscribe() {
+		generator.unsubscribe();
 	}
 }

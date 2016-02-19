@@ -41,8 +41,11 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 		assertNotNull(gen.updater);
 	}
 
-	public void _testInitAPIAndUserUpdate () {
-		initAPI(this::userUpdate);
+	public void _testUserUpdate () {
+		RxAPI api = buildComponent().getAPI();
+		api.update().subscribe(person -> System.out.println("Person changed: " + person));
+
+		sleep(8000);
 	}
 
 	public void testAppDBInjection() {
@@ -62,9 +65,10 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 		erasePersonsDatabase(realm);
 
 		String person = "{\"id\":1,\"location\":\"38.735227,-9.109606\",\"photo\":\"http://cs313217.vk.me/v313217800/436c/DO1w-2mKStQ.jpg\",\"status\":\"none\"}";
-		gen.updatePerson(person);
+		Person p = buildComponent().getGson().fromJson(person, Person.class);
+		gen.updatePerson(p);
 
-		Person p = realm.where(Person.class).findFirst();
+		p = realm.where(Person.class).findFirst();
 
 		assertEquals(realm.where(Person.class).count(), 1);
 		assertEquals(p.getId(), 1);
@@ -72,9 +76,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 	public void testPersonErasure() {
 		UserGenerator gen = buildComponent().getUserGenerator();
-		String person = "{\"id\": 1}";
-
-		gen.updatePerson(person);
+		gen.updatePerson(new Person());
 
 		long totalRecords = gen.realm.where(Person.class).equalTo("id", 1).count();
 		Log.w(TAG, "testPersonErasure: totalRecors:" + totalRecords);
@@ -88,11 +90,17 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 	}
 
 	public void _testDBGeneration() {
-		UserGenerator gen = buildComponent().getUserGenerator();
-		gen.generate();
+		RxAPI api = buildComponent().getAPI();
+		api.generate().subscribe(
+				System.out::println,
+				Throwable::printStackTrace,
+				() -> {
+					assertTrue(api.total > 0);
+					Log.i(TAG, "testDBGeneration: Got total:" + api.total);
+				}
+		);
 
-		assertNotNull(gen.getUserList());
-		assertTrue(gen.getUserList().size() > 0);
+		sleep(13000);
 	}
 
 	public void testGeneratorPresenterInjection() {
@@ -165,7 +173,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 		erasePersonsDatabase(gen.realm);
 
 		gen.subscribe();
-		sleep();
+		sleep(5000);
 		gen.unsubscribe();
 
 		gen.realm.refresh();
@@ -174,9 +182,9 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 		assertTrue(personsUpdated > 0);
 	}
 
-	private void sleep() {
+	private void sleep(int millis) {
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(millis);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

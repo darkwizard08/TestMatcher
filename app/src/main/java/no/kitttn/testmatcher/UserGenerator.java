@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import io.realm.Realm;
 import no.kitttn.testmatcher.model.Person;
 import no.kitttn.testmatcher.model.events.PersonListUpdatedEvent;
+import rx.Observable;
 
 /**
  * @author kitttn
@@ -42,6 +43,7 @@ public class UserGenerator {
 			return isSubscribed;
 		}
 	}
+	Observable<API> api = Observable.defer(() -> Observable.just(API.INSTANCE));
 
 	private static final String TAG = "UserGenerator";
 	private ArrayList<Person> userList = new ArrayList<>();
@@ -59,6 +61,8 @@ public class UserGenerator {
 		bus.register(this);
 		this.realm = realm;
 		this.context = context;
+
+		API.INSTANCE.init(this.context);
 	}
 
 	public void generate() {
@@ -121,11 +125,11 @@ public class UserGenerator {
 	// ======== updating ========
 
 	@Subscribe
-	public void updatePerson(String person) {
+	public void updatePerson(Person person) {
 		// creating new instance because Realm can't provide same instance on different threads
 		Realm r = Realm.getInstance(context);
 		r.beginTransaction();
-		Person p = r.createOrUpdateObjectFromJson(Person.class, person);
+		Person p = r.copyToRealmOrUpdate(person);
 		r.commitTransaction();
 
 		Log.w(TAG, "updatePerson: Updating person with id=" + p.getId());
@@ -155,8 +159,7 @@ public class UserGenerator {
 		Log.i(TAG, "getNextPerson: Persons left:" + getPersonsLeft());
 		if (getPersonsLeft() == 0) {
 			Log.i(TAG, "getNextPerson: No persons left, starting from the beginning...");
-			//updateList();
-			return new Person();
+			generate();
 		}
 		int index = random.nextInt(getPersonsLeft());
 		return userList.remove(index);
