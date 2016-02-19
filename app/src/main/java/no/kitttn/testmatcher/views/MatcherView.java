@@ -11,4 +11,7 @@ public interface MatcherView {
 	void showProfile(Person person);
 	void like();
 	void dislike();
+	void notice(String text);
+	void end();
+	void matchNotification();
 }

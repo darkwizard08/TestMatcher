@@ -2,6 +2,7 @@ package no.kitttn.testmatcher;
 
 import android.app.Application;
 
+import io.realm.RealmConfiguration;
 import no.kitttn.testmatcher.dagger2.components.ApplicationComponent;
 import no.kitttn.testmatcher.dagger2.components.DaggerApplicationComponent;
 import no.kitttn.testmatcher.dagger2.modules.PersonBaseModule;

@@ -71,10 +71,7 @@ public class RxAPI {
 	public Observable<Person> generate() {
 		API api = API.INSTANCE;
 		return idxs.doOnSubscribe(
-				() -> {
-					api.init(ctx);
-					api.refreshPersons(() -> System.out.println("Refreshed DB!"));
-				})
+				() -> api.refreshPersons(() -> System.out.println("Refreshed DB!")))
 				//.doOnSubscribe(() -> API.INSTANCE.refreshPersons(() -> {}))
 				.subscribeOn(Schedulers.io())
 				.doOnNext(it -> API.INSTANCE.getPersons(it, new PersonsExtendedCallback() {
@@ -95,5 +92,6 @@ public class RxAPI {
 	public RxAPI(Context ctx, Gson serializer) {
 		this.ctx = ctx;
 		this.gson = serializer;
+		API.INSTANCE.init(ctx);
 	}
 }

@@ -14,6 +14,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmObject;
 import no.kitttn.testmatcher.Matcher;
 import no.kitttn.testmatcher.RxAPI;
@@ -31,7 +32,11 @@ public class PersonBaseModule {
 
 	@Provides
 	public Realm provideRealm() {
-		Realm r = Realm.getInstance(ctx);
+		RealmConfiguration config = new RealmConfiguration.Builder(ctx)
+				.deleteRealmIfMigrationNeeded()
+				.build();
+
+		Realm r = Realm.getInstance(config);
 		r.setAutoRefresh(true);
 		return r;
 	}
@@ -52,8 +57,8 @@ public class PersonBaseModule {
 	}
 
 	@Provides @Singleton
-	public Matcher provideMatcher(UserGenerator generator) {
-		return new Matcher(generator);
+	public Matcher provideMatcher(UserGenerator generator, EventBus bus) {
+		return new Matcher(generator, bus);
 	}
 
 	@Provides

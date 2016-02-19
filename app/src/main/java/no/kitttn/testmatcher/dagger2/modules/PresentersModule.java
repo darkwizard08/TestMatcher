@@ -2,6 +2,8 @@ package no.kitttn.testmatcher.dagger2.modules;
 
 import org.greenrobot.eventbus.EventBus;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import no.kitttn.testmatcher.Matcher;
@@ -19,7 +21,7 @@ public class PresentersModule {
 		return new GeneratorPresenter(bus, generator);
 	}
 
-	@Provides
+	@Provides @Singleton
 	public MatcherPresenter provideMatcherPresenter(Matcher matcher, EventBus bus) {
 		return new MatcherPresenter(matcher, bus);
 	}

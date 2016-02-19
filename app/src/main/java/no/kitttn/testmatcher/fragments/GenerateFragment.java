@@ -60,7 +60,7 @@ public class GenerateFragment extends Fragment implements GeneratorView {
 		Util.hideLoading();
 		Intent i = new Intent(getActivity(), MatcherActivity.class);
 		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
 		startActivity(i);
+		getActivity().finish();
 	}
 }

@@ -5,7 +5,6 @@ import android.test.ApplicationTestCase;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
-import org.testpackage.test_sdk.android.testlib.API;
 
 import io.realm.Realm;
 import no.kitttn.testmatcher.dagger2.components.ApplicationComponent;
@@ -65,7 +64,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 		String person = "{\"id\":1,\"location\":\"38.735227,-9.109606\",\"photo\":\"http://cs313217.vk.me/v313217800/436c/DO1w-2mKStQ.jpg\",\"status\":\"none\"}";
 		Person p = buildComponent().getGson().fromJson(person, Person.class);
-		gen.onPersonUpdated(p);
+		gen.updatePerson(p);
 
 		p = realm.where(Person.class).findFirst();
 
@@ -75,7 +74,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 	public void testPersonErasure() {
 		UserGenerator gen = buildComponent().getUserGenerator();
-		gen.onPersonUpdated(new Person());
+		gen.updatePerson(new Person());
 
 		long totalRecords = gen.realm.where(Person.class).equalTo("id", 1).count();
 		Log.w(TAG, "testPersonErasure: totalRecors:" + totalRecords);
